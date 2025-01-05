@@ -27,8 +27,7 @@ const sceneStore = useSceneStore()
 
 // 粒子配置和动画逻辑
 const initParticles = () => {
-  // 添加延时确保 DOM 已完全加载
-  setTimeout(() => {
+  const timeoutId = setTimeout(() => {
     // 获取 canvas 元素和上下文
     const canvas = document.getElementById('particles') as HTMLCanvasElement;
     if (!canvas) return;  // 添加安全检查
@@ -163,13 +162,13 @@ const initParticles = () => {
       window.removeEventListener('mousemove', handleMouseMove);
     };
   }, 0);
+  return () => clearTimeout(timeoutId);
 };
 
 let cleanup: (() => void) | undefined;
 
 onMounted(() => {
-  const cleanupFn = initParticles();
-  if (cleanupFn) cleanup = cleanupFn;
+  cleanup = initParticles();
 });
 
 onBeforeUnmount(() => {
