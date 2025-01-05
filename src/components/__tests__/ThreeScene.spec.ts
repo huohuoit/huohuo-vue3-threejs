@@ -20,7 +20,7 @@ describe('ThreeScene', () => {
     })
 
     vi.mocked(useSceneStore).mockReturnValue({
-      isLoading: false,
+      isLoading: true,
       error: null,
       setLoading: vi.fn(),
       setError: vi.fn(),
