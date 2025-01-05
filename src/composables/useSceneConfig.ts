@@ -17,7 +17,7 @@ export function useSceneConfig() {
     } catch (error) {
       sceneStore.setError(error instanceof Error ? error.message : 'Failed to load config')
     } finally {
-      // sceneStore.setLoading(false)
+      sceneStore.setLoading(false)
     }
   }
 
