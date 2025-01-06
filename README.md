@@ -14,17 +14,29 @@
 
 ## 项目结构
 
-```
-src/
-   ├── api/          # API 接口
-   ├── assets/       # 静态资源
-   ├── components/   # 组件
-   ├── hooks/        # 自定义 hooks
-   ├── router/       # 路由配置
-   ├── stores/       # Pinia 状态管理
-   ├── types/        # TypeScript 类型定义
-   ├── utils/        # 工具函数
-   └── views/        # 页面视图
+```bash
+├── public/                 # 静态公共资源
+├── src/
+│   ├── assets/            # 静态资源
+│   │   ├── images/        # 图片资源
+│   │   ├── models/        # 3D 模型文件
+│   │   └── styles/        # 全局样式
+│   ├── components/        # 公共组件
+│   │   ├── three/        # Three.js 相关组件
+│   │   └── ui/           # UI 组件
+│   ├── composables/       # 组合式函数
+│   ├── config/           # 配置文件
+│   ├── layouts/          # 布局组件
+│   ├── router/           # 路由配置
+│   ├── stores/           # Pinia 状态管理
+│   ├── types/            # TypeScript 类型定义
+│   ├── utils/            # 工具函数
+│   │   ├── three/       # Three.js 相关工具
+│   │   └── common/      # 通用工具
+│   └── views/           # 页面视图
+├── tests/                # 测试文件
+├── env.d.ts             # 环境变量类型声明
+└── vite.config.ts       # Vite 配置
 ```
 
 ## 开发环境设置
