@@ -3,10 +3,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount } from 'vue'
-import { useThreeScene } from '@/hooks/useThreeScene'
+import { ref, onMounted, onBeforeUnmount, watch } from 'vue'
+import { inject } from 'vue'
+import { ThreeSceneKey } from '@/symbols/threeScene'
 import { useSceneStore } from '@/stores/scene'
-import { useSceneCamera } from '@/composables/useSceneCamera'
 import { useSceneConfig } from '@/composables/useSceneConfig'
 import { useSceneEvents } from '@/composables/useSceneEvents'
 
@@ -14,9 +14,18 @@ const containerRef = ref<HTMLDivElement>()
 const sceneStore = useSceneStore()
 const { config } = useSceneConfig()
 
-const { initScene, animate, cleanup } = useThreeScene()
-useSceneCamera()
+// 注入 three scene 实例
+const threeScene = inject(ThreeSceneKey)
+if (!threeScene) throw new Error('ThreeScene must be used within ThreeSceneProvider')
+
+const { initScene, animate, cleanup, setAnimationEnabled } = threeScene
+
 useSceneEvents()
+
+// 监听 store 中的动画状态
+watch(() => sceneStore.isAnimationEnabled, (newValue) => {
+  setAnimationEnabled(newValue)
+})
 
 onMounted(() => {
   try {

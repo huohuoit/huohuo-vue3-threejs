@@ -1,14 +1,27 @@
 import * as THREE from 'three'
 import { AmbientLight, DirectionalLight } from 'three'
 import { SceneConfig } from '@/types/three'
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import { ref } from 'vue'
+import { useSceneStore } from '@/stores/scene'
 
-export function useThreeScene() {
+// 添加单例存储
+let threeSceneInstance: ReturnType<typeof createThreeScene> | null = null
+
+// 重命名原函数为 createThreeScene
+const createThreeScene = () => {
   let scene: THREE.Scene
   let camera: THREE.PerspectiveCamera
   let renderer: THREE.WebGLRenderer
   let cube: THREE.Mesh
   let animationFrameId: number
   let isAnimationEnabled = true
+
+  const controls = ref<OrbitControls | null>(null)
+  const sceneStore = useSceneStore()
+
+  let initialCameraPosition: THREE.Vector3
+  let initialCameraRotation: THREE.Euler
 
   const initScene = (container: HTMLElement, config?: SceneConfig) => {
     scene = new THREE.Scene()
@@ -22,7 +35,11 @@ export function useThreeScene() {
       0.1,
       1000
     )
-    camera.position.z = 5
+    
+    camera.position.set(0, 0, 5)
+    camera.lookAt(0, 0, 0)
+    initialCameraPosition = camera.position.clone()
+    initialCameraRotation = camera.rotation.clone()
 
     renderer = new THREE.WebGLRenderer({ antialias: true })
     renderer.setSize(container.clientWidth, container.clientHeight)
@@ -43,15 +60,29 @@ export function useThreeScene() {
     cube = new THREE.Mesh(geometry, material)
     scene.add(cube)
 
+    // 修改 controls 初始化
+    controls.value = new OrbitControls(camera, renderer.domElement)
+    controls.value.enableDamping = true
+    controls.value.dampingFactor = 0.05
+    controls.value.autoRotate = sceneStore.isAnimationEnabled
+    controls.value.autoRotateSpeed = 2.0
+    controls.value.minDistance = 3
+    controls.value.maxDistance = 10
+    controls.value.enablePan = false
+    
+    // 确保 controls 初始状态正确
+    controls.value.target.set(0, 0, 0)
+    controls.value.update()
+
+    isAnimationEnabled = sceneStore.isAnimationEnabled
     window.addEventListener('resize', onWindowResize)
   }
 
   const animate = () => {
     animationFrameId = requestAnimationFrame(animate)
     
-    if (cube && isAnimationEnabled) {
-      cube.rotation.x += 0.01
-      cube.rotation.y += 0.01
+    if (controls.value) {
+      controls.value.update() // 始终更新 controls，不需要检查 isAnimationEnabled
     }
 
     renderer.render(scene, camera)
@@ -88,6 +119,71 @@ export function useThreeScene() {
 
   const setAnimationEnabled = (enabled: boolean) => {
     isAnimationEnabled = enabled
+    if (controls.value) {
+      controls.value.autoRotate = enabled
+      if (!enabled) {
+        controls.value.update()
+      }
+    }
+  }
+
+  const getCamera = () => {
+    return camera
+  }
+
+  const resetCamera = () => {
+    console.log('resetCamera called', {
+      hasCamera: !!camera,
+      hasControls: !!controls.value,
+      cameraPosition: camera?.position,
+      controlsTarget: controls.value?.target
+    })
+    
+    if (camera && controls.value) {
+      // 1. 先停止自动旋转
+      const wasAutoRotate = controls.value.autoRotate
+      controls.value.autoRotate = false
+      
+      // 2. 完全销毁当前的 controls
+      controls.value.dispose()
+      controls.value = null
+      
+      // 3. 重置相机到初始状态
+      camera.position.copy(initialCameraPosition)
+      camera.rotation.copy(initialCameraRotation)
+      
+      // 4. 创建新的 controls 实例
+      controls.value = new OrbitControls(camera, renderer.domElement)
+      
+      // 5. 设置 controls 的基本属性
+      controls.value.enableDamping = true
+      controls.value.dampingFactor = 0.05
+      controls.value.minDistance = 3
+      controls.value.maxDistance = 10
+      controls.value.enablePan = false
+      
+      // 6. 重置 controls 的目标点和更新
+      controls.value.target.set(0, 0, 0)
+      controls.value.update()
+      
+      // 7. 确保相机朝向正确
+      camera.lookAt(0, 0, 0)
+      camera.updateProjectionMatrix()
+      
+      // 8. 恢复自动旋转状态
+      controls.value.autoRotate = wasAutoRotate
+      controls.value.autoRotateSpeed = 2.0
+      
+      // 9. 重置物体
+      if (cube) {
+        cube.rotation.set(0, 0, 0)
+      }
+      
+      // 10. 强制渲染更新
+      renderer.render(scene, camera)
+    } else {
+      console.warn('Missing camera or controls')
+    }
   }
 
   return {
@@ -95,8 +191,18 @@ export function useThreeScene() {
     animate,
     cleanup,
     getScene: () => scene,
-    getCamera: () => camera,
+    getCamera,
     getRenderer: () => renderer,
-    setAnimationEnabled
+    setAnimationEnabled,
+    controls,
+    resetCamera,
   }
+}
+
+// 导出单例版本的 useThreeScene
+export const useThreeScene = () => {
+  if (!threeSceneInstance) {
+    threeSceneInstance = createThreeScene()
+  }
+  return threeSceneInstance
 } 

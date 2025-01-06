@@ -100,7 +100,7 @@ export function useParticles(canvas: HTMLCanvasElement, config: ParticlesConfig 
     geometry.setAttribute('scale', new THREE.BufferAttribute(scales, 1))
     geometry.setAttribute('randomness', new THREE.BufferAttribute(randomness, 3))
 
-    // 使用基础材质替代着色器材质
+    // 使用基础材质替代着色器材质（提高webgl性能）
     const material = new THREE.PointsMaterial({
       size: mergedConfig.size,
       vertexColors: true,
