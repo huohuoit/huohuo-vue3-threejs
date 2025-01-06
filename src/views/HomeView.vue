@@ -162,7 +162,7 @@ onBeforeUnmount(() => {
   position: relative;
   display: inline-block;
   background: linear-gradient(45deg, #42b883, #64ffda);
-  -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
@@ -174,7 +174,7 @@ onBeforeUnmount(() => {
 
 .gradient-text-light {
   background: linear-gradient(45deg, #42b883 30%, #64ffda 70%);
-  -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
@@ -263,7 +263,7 @@ onBeforeUnmount(() => {
   font-size: 2.5rem;
   margin-bottom: 1.5rem;
   background: linear-gradient(45deg, #42b883, #64ffda);
-  -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 

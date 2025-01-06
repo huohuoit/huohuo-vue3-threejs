@@ -127,8 +127,6 @@ export function useParticles(canvas: HTMLCanvasElement, config: ParticlesConfig 
   }
 
   const animate = () => {
-    const time = clock.getElapsedTime()
-    
     if (particles) {
       // 简化动画逻辑
       particles.rotation.x += 0.001
