@@ -9,7 +9,7 @@ SceneControls.vue - Three.js场景控制组件，提供重置相机和控制模�
 -->
 <template>
   <div class="scene-controls">
-    <button @click="resetCamera">重置视角</button>
+    <button @click="handleResetCamera">重置视角</button>
     <button @click="toggleRotation">
       {{ isRotating ? '停止旋转' : '开始旋转' }}
     </button>
@@ -17,26 +17,34 @@ SceneControls.vue - Three.js场景控制组件，提供重置相机和控制模�
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useThreeScene } from '@/hooks/useThreeScene'
+import { ref, onMounted } from 'vue'
+import { inject } from 'vue'
+import { ThreeSceneKey } from '@/symbols/threeScene'
 import { useSceneStore } from '@/stores/scene'
 
-const isRotating = ref(true)
-const { getCamera, setAnimationEnabled } = useThreeScene()
 const sceneStore = useSceneStore()
 
-const resetCamera = () => {
-  const camera = getCamera()
-  if (camera) {
-    camera.position.set(0, 0, 5)
-    camera.lookAt(0, 0, 0)
-    sceneStore.setLoading(false)
-  }
+// 注入 three scene 实例
+const threeScene = inject(ThreeSceneKey)
+if (!threeScene)
+  throw new Error('SceneControls must be used within ThreeSceneProvider')
+
+const { resetCamera: resetCameraFn, setAnimationEnabled } = threeScene
+const isRotating = ref(sceneStore.isAnimationEnabled)
+
+onMounted(() => {
+  setAnimationEnabled(isRotating.value)
+})
+
+const handleResetCamera = () => {
+  console.log('Reset camera clicked')
+  resetCameraFn()
 }
 
 const toggleRotation = () => {
   isRotating.value = !isRotating.value
-  setAnimationEnabled(isRotating.value) // 通知Three.js场景更新动画状态
+  sceneStore.setAnimationEnabled(isRotating.value)
+  setAnimationEnabled(isRotating.value)
 }
 </script>
 

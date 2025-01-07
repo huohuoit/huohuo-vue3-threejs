@@ -13,12 +13,12 @@ ThreeScene.vue - Three.js场景渲染组件
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount } from 'vue'
-import { useThreeScene } from '@/hooks/useThreeScene' // 核心场景管理hook
-import { useSceneStore } from '@/stores/scene' // 场景状态管理
-import { useSceneCamera } from '@/composables/useSceneCamera' // 相机控制
-import { useSceneConfig } from '@/composables/useSceneConfig' // 场景配置
-import { useSceneEvents } from '@/composables/useSceneEvents' // 场景事件处理
+import { ref, onMounted, onBeforeUnmount, watch } from 'vue'
+import { inject } from 'vue'
+import { ThreeSceneKey } from '@/symbols/threeScene'
+import { useSceneStore } from '@/stores/scene'
+import { useSceneConfig } from '@/composables/useSceneConfig'
+import { useSceneEvents } from '@/composables/useSceneEvents'
 
 // 场景容器DOM引用
 const containerRef = ref<HTMLDivElement>()
@@ -27,14 +27,23 @@ const sceneStore = useSceneStore()
 // 获取场景配置
 const { config } = useSceneConfig()
 
-// 从useThreeScene中获取核心场景操作方法
-const { initScene, animate, cleanup } = useThreeScene()
-// 启用相机控制
-useSceneCamera()
-// 启用场景事件处理
+// 注入 three scene 实例
+const threeScene = inject(ThreeSceneKey)
+if (!threeScene)
+  throw new Error('ThreeScene must be used within ThreeSceneProvider')
+
+const { initScene, animate, cleanup, setAnimationEnabled } = threeScene
+
 useSceneEvents()
 
-// 组件挂载时初始化场景
+// 监听 store 中的动画状态
+watch(
+  () => sceneStore.isAnimationEnabled,
+  (newValue) => {
+    setAnimationEnabled(newValue)
+  }
+)
+
 onMounted(() => {
   try {
     if (containerRef.value) {

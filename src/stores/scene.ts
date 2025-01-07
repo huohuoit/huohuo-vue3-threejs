@@ -5,18 +5,20 @@ interface SceneState {
   isLoading: boolean
   error: string | null
   config: SceneConfig | null
+  isAnimationEnabled: boolean
 }
 
 export const useSceneStore = defineStore('scene', {
   state: (): SceneState => ({
-    isLoading: false,
+    isLoading: true,
     error: null,
-    config: null
+    config: null,
+    isAnimationEnabled: true
   }),
   
   actions: {
-    setLoading(loading: boolean) {
-      this.isLoading = loading
+    setLoading(status: boolean) {
+      this.isLoading = status
     },
     
     setError(error: string | null) {
@@ -25,6 +27,10 @@ export const useSceneStore = defineStore('scene', {
     
     setConfig(config: SceneConfig) {
       this.config = config
+    },
+    
+    setAnimationEnabled(enabled: boolean) {
+      this.isAnimationEnabled = enabled
     }
   }
 }) 
