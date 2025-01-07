@@ -2,7 +2,7 @@
   <div class="home">
     <!-- 3D 背景场景 -->
     <canvas ref="canvasRef" class="background-scene" />
-    
+
     <!-- 主要内容区 -->
     <div class="content">
       <div class="hero-section">
@@ -13,32 +13,38 @@
       </div>
 
       <div class="glass-container main-content">
-      <div class="button-group">
-        <router-link to="/scene" class="scene-link primary glass-button">
-          <span class="button-content">
-            <span class="icon">🚀</span>
-            进入3D场景
-          </span>
-        </router-link>
-        
-        <a href="https://github.com/huohuoit/huohuo-vue3-threejs" 
-           target="_blank" 
-           class="scene-link secondary glass-button">
-          <span class="button-content">
-            <span class="icon">⭐</span>
-            GitHub
-          </span>
-        </a>
-      </div>
+        <div class="button-group">
+          <router-link to="/scene" class="scene-link primary glass-button">
+            <span class="button-content">
+              <span class="icon">🚀</span>
+              进入3D场景
+            </span>
+          </router-link>
 
-      <div class="features">
-        <div class="feature-item glass-card" v-for="(feature, index) in features" :key="index"
-             :style="{ animationDelay: `${index * 0.2}s` }">
-          <div class="feature-icon">{{ feature.icon }}</div>
-          <h3>{{ feature.title }}</h3>
-          <p>{{ feature.description }}</p>
+          <a
+            href="https://github.com/huohuoit/huohuo-vue3-threejs"
+            target="_blank"
+            class="scene-link secondary glass-button"
+          >
+            <span class="button-content">
+              <span class="icon">⭐</span>
+              GitHub
+            </span>
+          </a>
         </div>
-      </div>
+
+        <div class="features">
+          <div
+            class="feature-item glass-card"
+            v-for="(feature, index) in features"
+            :key="index"
+            :style="{ animationDelay: `${index * 0.2}s` }"
+          >
+            <div class="feature-icon">{{ feature.icon }}</div>
+            <h3>{{ feature.title }}</h3>
+            <p>{{ feature.description }}</p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -73,7 +79,7 @@ let particlesInstance: { cleanup: () => void } | null = null
 onMounted(() => {
   nextTick(() => {
     if (!canvasRef.value) return
-    
+
     particlesInstance = useParticles(canvasRef.value, {
       count: 8000,
       size: 0.08,
@@ -101,7 +107,11 @@ onBeforeUnmount(() => {
   height: 100vh;
   overflow: hidden;
   color: white;
-  background: radial-gradient(circle at center, rgba(10, 10, 10, 0.3) 0%, rgba(10, 10, 10, 0.7) 100%);
+  background: radial-gradient(
+    circle at center,
+    rgba(10, 10, 10, 0.3) 0%,
+    rgba(10, 10, 10, 0.7) 100%
+  );
 }
 
 .background-scene {
@@ -145,6 +155,9 @@ onBeforeUnmount(() => {
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   max-height: calc(60vh - 4rem);
   overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 }
 
 .main-content {
@@ -208,7 +221,11 @@ onBeforeUnmount(() => {
 }
 
 .scene-link.primary {
-  background: linear-gradient(45deg, rgba(66, 184, 131, 0.8), rgba(53, 73, 94, 0.8));
+  background: linear-gradient(
+    45deg,
+    rgba(66, 184, 131, 0.8),
+    rgba(53, 73, 94, 0.8)
+  );
   color: white;
 }
 
@@ -234,21 +251,25 @@ onBeforeUnmount(() => {
   padding: 1rem;
   max-width: 1200px;
   margin: 0 auto;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
 }
 
 .glass-card {
-  backdrop-filter: blur(4px);
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 20px;
   padding: 2rem;
   transition: all 0.3s ease;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 .glass-card:hover {
   background: rgba(255, 255, 255, 0.08);
   transform: translateY(-5px);
-  box-shadow: 0 12px 32px rgba(66, 184, 131, 0.1);
+  box-shadow: 0 12px 32px rgba(66, 184, 131, 0.2);
 }
 
 .feature-item {
@@ -262,9 +283,6 @@ onBeforeUnmount(() => {
 .feature-icon {
   font-size: 2.5rem;
   margin-bottom: 1.5rem;
-  background: linear-gradient(45deg, #42b883, #64ffda);
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
 }
 
 .feature-item h3 {
@@ -290,26 +308,30 @@ onBeforeUnmount(() => {
     height: 35vh;
     padding-top: 1rem;
   }
-  
+
   .glass-container {
+    max-height: calc(65vh - 4rem);
     margin: 1rem;
     padding: 1rem;
-    max-height: calc(65vh - 2rem);
+    backdrop-filter: blur(15px);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.15);
   }
-  
+
   .title {
     font-size: 3rem;
   }
-  
+
   .subtitle {
     font-size: 1.5rem;
   }
-  
+
   .button-group {
     flex-direction: column;
     margin-bottom: 2rem;
+    flex-shrink: 0;
   }
-  
+
   .features {
     grid-template-columns: 1fr;
     padding: 0.5rem;
@@ -334,4 +356,4 @@ onBeforeUnmount(() => {
 .glass-container::-webkit-scrollbar-thumb:hover {
   background: rgba(66, 184, 131, 0.5);
 }
-</style> 
+</style>
