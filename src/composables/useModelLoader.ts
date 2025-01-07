@@ -20,15 +20,17 @@ export function useModelLoader() {
       sceneStore.setLoading(true)
       const gltf = await loader.loadAsync(url)
       models.value.set(name, gltf.scene)
-      
+
       const scene = getScene()
       if (scene) {
         scene.add(gltf.scene)
       }
-      
+
       return gltf.scene
     } catch (error) {
-      sceneStore.setError(error instanceof Error ? error.message : 'Failed to load model')
+      sceneStore.setError(
+        error instanceof Error ? error.message : 'Failed to load model'
+      )
       throw error
     } finally {
       sceneStore.setLoading(false)
@@ -49,4 +51,4 @@ export function useModelLoader() {
     loadModel,
     removeModel
   }
-} 
+}

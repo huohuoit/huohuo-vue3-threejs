@@ -15,7 +15,9 @@ export function useSceneConfig() {
       config.value = mergeSceneConfig(apiConfig)
       sceneStore.setConfig(config.value)
     } catch (error) {
-      sceneStore.setError(error instanceof Error ? error.message : 'Failed to load config')
+      sceneStore.setError(
+        error instanceof Error ? error.message : 'Failed to load config'
+      )
     } finally {
       sceneStore.setLoading(false)
     }
@@ -29,4 +31,4 @@ export function useSceneConfig() {
     config,
     loadConfig
   }
-} 
+}
