@@ -1,6 +1,6 @@
 import { ref, watch } from 'vue'
 import { PerspectiveCamera } from 'three'
-import { useThreeScene } from '@/hooks/useThreeScene'
+import { useThreeScene } from '@/composables/useThreeScene/index'
 
 export interface CameraConfig {
   fov: number

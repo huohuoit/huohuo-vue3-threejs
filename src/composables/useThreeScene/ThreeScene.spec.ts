@@ -1,10 +1,11 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { ref } from 'vue'
 import { mount } from '@vue/test-utils'
-import ThreeScene from '../ThreeScene.vue'
-import { useThreeScene } from '@/hooks/useThreeScene'
+import ThreeScene from '@/components/ThreeScene.vue'
+import { useThreeScene } from '@/composables/useThreeScene/index'
 import { useSceneStore } from '@/stores/scene'
 
-vi.mock('@/hooks/useThreeScene')
+vi.mock('@/composables/useThreeScene/index')
 vi.mock('@/stores/scene')
 
 describe('ThreeScene', () => {
@@ -16,7 +17,9 @@ describe('ThreeScene', () => {
       getScene: vi.fn(),
       getCamera: vi.fn(),
       getRenderer: vi.fn(),
-      setAnimationEnabled: vi.fn()
+      setAnimationEnabled: vi.fn(),
+      controls: ref(null),
+      resetCamera: vi.fn()
     })
 
     vi.mocked(useSceneStore).mockReturnValue({
@@ -36,7 +39,7 @@ describe('ThreeScene', () => {
   it('initializes scene on mount', async () => {
     const wrapper = mount(ThreeScene)
     await wrapper.vm.$nextTick()
-    
+
     const { initScene, animate } = useThreeScene()
     expect(initScene).toHaveBeenCalled()
     expect(animate).toHaveBeenCalled()
@@ -57,4 +60,4 @@ describe('ThreeScene', () => {
     const store = useSceneStore()
     expect(store.setError).toHaveBeenCalledWith(error.message)
   })
-}) 
+})

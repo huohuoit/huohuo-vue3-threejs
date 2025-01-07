@@ -1,8 +1,8 @@
 import { SceneConfig } from '@/types/three'
 
 export const DEFAULT_SCENE_CONFIG: SceneConfig = {
-  backgroundColor: '#000000',
-  ambientLightColor: '#ffffff',
+  backgroundColor: 0x000000,
+  ambientLightColor: 0xffffff,
   ambientLightIntensity: 0.5
 }
 

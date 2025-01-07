@@ -1,6 +1,6 @@
 import { ref, watch } from 'vue'
 import { Color } from 'three'
-import { useThreeScene } from '@/hooks/useThreeScene'
+import { useThreeScene } from '@/composables/useThreeScene/index'
 import { SceneSettings } from '@/types/config'
 
 const DEFAULT_SETTINGS: SceneSettings = {

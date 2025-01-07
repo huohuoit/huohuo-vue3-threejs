@@ -3,7 +3,7 @@ import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass'
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass'
 import { SMAAPass } from 'three/examples/jsm/postprocessing/SMAAPass'
-import { useThreeScene } from '@/hooks/useThreeScene'
+import { useThreeScene } from '@/composables/useThreeScene/index'
 import { Vector2 } from 'three'
 
 export function usePostProcessing() {

@@ -1,20 +1,16 @@
-<template>
-  <div class="scene-stats" v-if="enabled">
-    <!-- 用于挂载stats.js性能面板的容器 -->
-    <div ref="statsRef"></div>
-  </div>
-</template>
-
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import Stats from 'stats.js' // 导入性能监控库stats.js
 
 // 定义组件props,enabled用于控制是否显示性能面板
-const props = withDefaults(defineProps<{
-  enabled?: boolean
-}>(), {
-  enabled: true // 默认启用
-})
+const props = withDefaults(
+  defineProps<{
+    enabled?: boolean
+  }>(),
+  {
+    enabled: true // 默认启用
+  }
+)
 
 const statsRef = ref<HTMLDivElement>()
 let stats: Stats | null = null
@@ -39,6 +35,13 @@ onBeforeUnmount(() => {
 })
 </script>
 
+<template>
+  <div class="scene-stats" v-if="enabled">
+    <!-- 用于挂载stats.js性能面板的容器 -->
+    <div ref="statsRef"></div>
+  </div>
+</template>
+
 <style scoped>
 .scene-stats {
   position: fixed;
@@ -46,4 +49,4 @@ onBeforeUnmount(() => {
   left: 0;
   z-index: 100; /* 确保显示在其他元素之上 */
 }
-</style> 
+</style>

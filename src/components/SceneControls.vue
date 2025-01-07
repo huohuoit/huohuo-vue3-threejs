@@ -7,14 +7,6 @@ SceneControls.vue - Three.js场景控制组件，提供重置相机和控制模�
 - useThreeScene: 自定义hook，用于操作Three.js场景
 - useSceneStore: Pinia状态管理，控制场景相关状态
 -->
-<template>
-  <div class="scene-controls">
-    <button @click="handleResetCamera">重置视角</button>
-    <button @click="toggleRotation">
-      {{ isRotating ? '停止旋转' : '开始旋转' }}
-    </button>
-  </div>
-</template>
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
@@ -47,6 +39,15 @@ const toggleRotation = () => {
   setAnimationEnabled(isRotating.value)
 }
 </script>
+
+<template>
+  <div class="scene-controls">
+    <button @click="handleResetCamera">重置视角</button>
+    <button @click="toggleRotation">
+      {{ isRotating ? '停止旋转' : '开始旋转' }}
+    </button>
+  </div>
+</template>
 
 <style scoped>
 .scene-controls {

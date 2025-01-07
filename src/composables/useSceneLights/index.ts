@@ -1,6 +1,6 @@
 import { ref } from 'vue'
 import { AmbientLight, DirectionalLight, SpotLight } from 'three'
-import { useThreeScene } from '@/hooks/useThreeScene'
+import { useThreeScene } from '@/composables/useThreeScene/index'
 import { LightSettings } from '@/types/config'
 
 export function useSceneLights(initialSettings?: Partial<LightSettings>) {

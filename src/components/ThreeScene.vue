@@ -6,19 +6,13 @@ ThreeScene.vue - Three.js场景渲染组件
 3. 整合各个场景相关的功能模块
 4. 处理场景渲染的错误状态
 -->
-
-<template>
-  <!-- Three.js渲染容器,占满整个视口 -->
-  <div ref="containerRef" class="three-container" />
-</template>
-
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount, watch } from 'vue'
 import { inject } from 'vue'
 import { ThreeSceneKey } from '@/symbols/threeScene'
 import { useSceneStore } from '@/stores/scene'
-import { useSceneConfig } from '@/composables/useSceneConfig'
-import { useSceneEvents } from '@/composables/useSceneEvents'
+import { useSceneConfig } from '@/composables/useSceneConfig/index'
+import { useSceneEvents } from '@/composables/useSceneEvents/index'
 
 // 场景容器DOM引用
 const containerRef = ref<HTMLDivElement>()
@@ -65,6 +59,11 @@ onBeforeUnmount(() => {
   cleanup()
 })
 </script>
+
+<template>
+  <!-- Three.js渲染容器,占满整个视口 -->
+  <div ref="containerRef" class="three-container" />
+</template>
 
 <style scoped>
 /* 场景容器样式 */

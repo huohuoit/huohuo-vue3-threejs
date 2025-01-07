@@ -1,7 +1,7 @@
 import { ref } from 'vue'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader'
-import { useThreeScene } from '@/hooks/useThreeScene'
+import { useThreeScene } from '@/composables/useThreeScene/index'
 import { useSceneStore } from '@/stores/scene'
 
 export function useModelLoader() {

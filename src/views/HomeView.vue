@@ -1,3 +1,54 @@
+<script setup lang="ts">
+import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
+import { useParticles } from '@/composables/useParticles/index'
+
+// 特性列表数据
+const features = [
+  {
+    icon: '🎮',
+    title: '交互体验',
+    description: '沉浸式的 3D 交互体验'
+  },
+  {
+    icon: '⚡',
+    title: '高性能',
+    description: 'WebGL 渲染，性能优化'
+  },
+  {
+    icon: '🎨',
+    title: '视觉效果',
+    description: '精美的视觉设计和动画'
+  }
+]
+
+const canvasRef = ref<HTMLCanvasElement | null>(null)
+let particlesInstance: { cleanup: () => void } | null = null
+
+onMounted(() => {
+  nextTick(() => {
+    if (!canvasRef.value) return
+
+    particlesInstance = useParticles(canvasRef.value, {
+      count: 8000,
+      size: 0.08,
+      color: '#42b883',
+      opacity: 0.9,
+      spread: 40,
+      speed: {
+        x: 0.0003,
+        y: 0.0003
+      }
+    })
+  })
+})
+
+onBeforeUnmount(() => {
+  if (particlesInstance) {
+    particlesInstance.cleanup()
+  }
+})
+</script>
+
 <template>
   <div class="home">
     <!-- 3D 背景场景 -->
@@ -49,57 +100,6 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount, nextTick } from 'vue'
-import { useParticles } from '@/composables/useParticles'
-
-// 特性列表数据
-const features = [
-  {
-    icon: '🎮',
-    title: '交互体验',
-    description: '沉浸式的 3D 交互体验'
-  },
-  {
-    icon: '⚡',
-    title: '高性能',
-    description: 'WebGL 渲染，性能优化'
-  },
-  {
-    icon: '🎨',
-    title: '视觉效果',
-    description: '精美的视觉设计和动画'
-  }
-]
-
-const canvasRef = ref<HTMLCanvasElement | null>(null)
-let particlesInstance: { cleanup: () => void } | null = null
-
-onMounted(() => {
-  nextTick(() => {
-    if (!canvasRef.value) return
-
-    particlesInstance = useParticles(canvasRef.value, {
-      count: 8000,
-      size: 0.08,
-      color: '#42b883',
-      opacity: 0.9,
-      spread: 40,
-      speed: {
-        x: 0.0003,
-        y: 0.0003
-      }
-    })
-  })
-})
-
-onBeforeUnmount(() => {
-  if (particlesInstance) {
-    particlesInstance.cleanup()
-  }
-})
-</script>
 
 <style scoped>
 .home {

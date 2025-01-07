@@ -1,6 +1,6 @@
 import { onMounted, onBeforeUnmount } from 'vue'
 import * as THREE from 'three'
-import { useThreeScene } from '@/hooks/useThreeScene'
+import { useThreeScene } from '@/composables/useThreeScene/index'
 import type { Intersection } from 'three'
 
 export interface InteractionEvents {

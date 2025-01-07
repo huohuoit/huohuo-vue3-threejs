@@ -1,15 +1,3 @@
-<template>
-  <ThreeSceneProvider>
-    <div class="scene-view">
-      <ErrorBoundary>
-        <SceneStats v-if="isDev" />
-        <SceneLoader />
-        <ThreeScene />
-        <SceneControls />
-      </ErrorBoundary>
-    </div>
-  </ThreeSceneProvider>
-</template>
 
 <script setup lang="ts">
 import ThreeSceneProvider from '@/components/ThreeSceneProvider.vue'
@@ -22,6 +10,19 @@ import SceneStats from '@/components/SceneStats.vue'
 // 在 setup 中定义环境变量
 const isDev = import.meta.env.DEV
 </script>
+
+<template>
+  <ThreeSceneProvider>
+    <div class="scene-view">
+      <ErrorBoundary>
+        <SceneStats v-if="isDev" />
+        <SceneLoader />
+        <ThreeScene />
+        <SceneControls />
+      </ErrorBoundary>
+    </div>
+  </ThreeSceneProvider>
+</template>
 
 <style scoped>
 .scene-view {
