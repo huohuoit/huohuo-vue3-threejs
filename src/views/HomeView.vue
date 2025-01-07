@@ -153,11 +153,8 @@ onBeforeUnmount(() => {
   margin: 0 2rem 2rem;
   padding: 2rem;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-  max-height: calc(60vh - 4rem);
-  overflow-y: auto;
   display: flex;
   flex-direction: column;
-  min-height: 0;
 }
 
 .main-content {
@@ -251,9 +248,6 @@ onBeforeUnmount(() => {
   padding: 1rem;
   max-width: 1200px;
   margin: 0 auto;
-  flex: 1;
-  min-height: 0;
-  overflow-y: auto;
 }
 
 .glass-card {
@@ -310,7 +304,6 @@ onBeforeUnmount(() => {
   }
 
   .glass-container {
-    max-height: calc(65vh - 4rem);
     margin: 1rem;
     padding: 1rem;
     backdrop-filter: blur(15px);

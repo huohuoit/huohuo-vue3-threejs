@@ -9,6 +9,7 @@
 - Three.js
 - Vite
 - Pinia
+- UnoCSS
 - Vue Router
 - Vitest
 
@@ -43,16 +44,16 @@
 
 ```bash
 # 安装依赖
-npm install
+pnpm install
 
 # 启动开发服务器
-npm run dev
+pnpm dev
 
 # 构建生产版本
-npm run build
+pnpm build
 
 # 运行测试
-npm run test
+pnpm test
 ```
 
 ## 开发指南
@@ -74,11 +75,11 @@ npm run test
 
 ```bash
 # 运行单元测试
-npm run test
+pnpm test
 
 # 运行测试 UI
-npm run test:ui
+pnpm test:ui
 
 # 生成测试覆盖率报告
-npm run test:coverage
+pnpm test:coverage
 ```

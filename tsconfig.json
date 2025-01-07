@@ -15,7 +15,7 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "types": ["vite/client", "vitest/globals", "three", "stats.js"],
+    "types": ["vite/client", "vitest/globals", "three", "stats.js", "vue"],
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
