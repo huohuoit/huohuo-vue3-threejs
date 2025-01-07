@@ -43,14 +43,14 @@ export function useParticles(canvas: HTMLCanvasElement, config: ParticlesConfig 
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
     camera.position.z = 30
 
-    renderer = new THREE.WebGLRenderer({ 
-      canvas, 
+    renderer = new THREE.WebGLRenderer({
+      canvas,
       alpha: true,
       antialias: false,
-      powerPreference: "default"
+      powerPreference: 'high-performance'
     })
     renderer.setSize(window.innerWidth, window.innerHeight)
-    renderer.setPixelRatio(1)
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
     const mergedConfig = { ...DEFAULT_CONFIG, ...config }
     
