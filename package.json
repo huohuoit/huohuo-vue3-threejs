@@ -16,6 +16,8 @@
   "dependencies": {
     "@types/stats.js": "^0.17.3",
     "@vueuse/core": "^12.3.0",
+    "globe.gl": "^2.34.6",
+    "gsap": "^3.12.5",
     "pinia": "^2.3.0",
     "stats.js": "^0.17.0",
     "three": "^0.172.0",

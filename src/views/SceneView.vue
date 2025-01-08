@@ -1,35 +1,208 @@
 <script setup lang="ts">
-import ThreeSceneProvider from '@/components/ThreeSceneProvider.vue'
-// import ThreeScene from '@/components/ThreeScene.vue'
-import SceneControls from '@/components/SceneControls.vue'
-import SceneLoader from '@/components/SceneLoader.vue'
-import ErrorBoundary from '@/components/ErrorBoundary.vue'
-import SceneStats from '@/components/SceneStats.vue'
-import ModelViewer from '@/components/ModelViewer.vue'
+import { onMounted, ref, onBeforeUnmount } from 'vue'
+import ThreeGlobe from 'globe.gl'
+import { gsap } from 'gsap'
+import * as THREE from 'three'
+import type { GlobeInstance } from 'globe.gl'
 
-// 在 setup 中定义环境变量
-const isDev = import.meta.env.DEV
+// 地球实例引用
+const globeEl = ref<HTMLDivElement>()
+const globe = ref<GlobeInstance | null>(null)
+
+// 数据状态
+const points = ref<any[]>([])
+const arcs = ref<any[]>([])
+const alerts = ref<any[]>([])
+
+// 深圳的经纬度坐标
+const SHENZHEN_COORDINATES = { lat: 22.5431, lng: 114.0579 }
+
+// 初始化地球
+const initGlobe = () => {
+  if (!globeEl.value) return
+  
+  globe.value = ThreeGlobe()(globeEl.value)
+    .globeImageUrl('//unpkg.com/three-globe/example/img/earth-night.jpg')
+    .bumpImageUrl('//unpkg.com/three-globe/example/img/earth-topology.png')
+    .backgroundImageUrl('//unpkg.com/three-globe/example/img/night-sky.png')
+    .pointsData(points.value)
+    .pointColor('color')
+    .pointAltitude(0.1)
+    .pointRadius('size')
+    .pointsMerge(true)
+    .arcsData(arcs.value)
+    .arcColor('color')
+    .arcDashLength(0.6)
+    .arcDashGap(0.3)
+    .arcDashInitialGap(() => Math.random() * 5)
+    .arcDashAnimateTime(2000)
+    .arcStroke(0.5)
+    .arcsTransitionDuration(1000)
+    .pointAltitude(({ lat, lng }) => 
+      lat === SHENZHEN_COORDINATES.lat && lng === SHENZHEN_COORDINATES.lng ? 0.2 : 0.1
+    )
+    .onGlobeClick((coords: { lat: number; lng: number }) => {
+      createAlert(coords.lat, coords.lng)
+    })
+
+  // 设置控制器
+  const controls = globe.value!.controls()
+  controls.autoRotate = true
+  controls.autoRotateSpeed = 0.5
+
+  // 获取场景对象
+  const scene = globe.value!.scene()
+  
+  // 设置环境光
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.8)
+  scene.add(ambientLight)
+  
+  // 设置点光源
+  const pointLight = new THREE.PointLight(0xffffff, 1)
+  pointLight.position.set(100, 100, 100)
+  scene.add(pointLight)
+}
+
+// 生成随机数据点
+const generateRandomPoints = (count: number) => {
+  return Array.from({ length: count }, () => ({
+    lat: (Math.random() - 0.5) * 140 + 20,
+    lng: (Math.random() - 0.5) * 360,
+    size: Math.random() * 0.5 + 0.5,
+    color: ['#4dffff', '#fff', '#fffc00'][Math.floor(Math.random() * 3)]
+  }))
+}
+
+// 生成飞线数据
+const generateArcs = (points: any[]) => {
+  return points.map(endPoint => ({
+    startLat: SHENZHEN_COORDINATES.lat,
+    startLng: SHENZHEN_COORDINATES.lng,
+    endLat: endPoint.lat,
+    endLng: endPoint.lng,
+    color: [
+      ['#4dffff', '#378888'],
+      ['#fffc00', '#988b1c'],
+      ['#ff2d2d', '#881414']
+    ][Math.floor(Math.random() * 3)]
+  }))
+}
+
+// 创建预警效果
+const createAlert = (lat: number, lng: number) => {
+  console.log('Creating alert at:', lat, lng);
+  const alert = {
+    lat,
+    lng,
+    maxR: 0.1,
+    propagationSpeed: 5,
+    repeatPeriod: 1000
+  }
+  
+  alerts.value.push(alert)
+  
+  gsap.to(alert, {
+    maxR: 2,
+    duration: 2,
+    ease: 'power2.out',
+    onComplete: () => {
+      alerts.value = alerts.value.filter(a => a !== alert)
+    }
+  })
+}
+
+// 渲染预警环
+const renderAlerts = () => {
+  console.log('Rendering alerts:', alerts.value.length);
+  if (!globe.value) return
+  
+  const scene = globe.value.scene()
+  
+  // 清除旧的预警环
+  scene.children = scene.children.filter(child => !(child instanceof THREE.Mesh && child.userData.isAlert))
+  
+  alerts.value.forEach(alert => {
+    // 将经纬度转换为3D坐标
+    const phi = (90 - alert.lat) * (Math.PI / 180)
+    const theta = (180 - alert.lng) * (Math.PI / 180)
+    const radius = 100.5
+
+    // 计算环形位置
+    const x = radius * Math.sin(phi) * Math.cos(theta)
+    const y = radius * Math.cos(phi)
+    const z = radius * Math.sin(phi) * Math.sin(theta)
+
+    // 创建环形，调整大小
+    const ring = new THREE.Mesh(
+      new THREE.RingGeometry(alert.maxR, alert.maxR + 0.5, 32),
+      new THREE.MeshBasicMaterial({
+        color: 0xff4444,
+        transparent: true,
+        opacity: 0.8,
+        side: THREE.DoubleSide,
+        depthWrite: false
+      })
+    )
+
+    ring.userData.isAlert = true
+    ring.position.set(x, y, z)
+    ring.lookAt(0, 0, 0)
+    scene.add(ring)
+  })
+}
+
+// 生命周期钩子
+onMounted(() => {
+  points.value = [
+    {
+      ...SHENZHEN_COORDINATES,
+      size: 1,
+      color: '#ff2d2d'
+    },
+    ...generateRandomPoints(30)
+  ]
+  arcs.value = generateArcs(points.value.slice(1))
+  
+  initGlobe()
+  
+  const updateInterval = setInterval(() => {
+    arcs.value = generateArcs(points.value.slice(1))
+  }, 3000)
+
+  // 启动动画循环
+  const animate = () => {
+    renderAlerts()
+    requestAnimationFrame(animate)
+  }
+  animate()
+
+  onBeforeUnmount(() => {
+    clearInterval(updateInterval)
+  })
+})
+
+onBeforeUnmount(() => {
+  if (globe.value) {
+    globe.value.dispose()
+  }
+})
 </script>
 
 <template>
-  <ThreeSceneProvider>
-    <div class="scene-view">
-      <ErrorBoundary>
-        <SceneStats v-if="isDev" />
-        <SceneLoader />
-        <!-- <ThreeScene /> -->
-        <ModelViewer />
-        <SceneControls />
-      </ErrorBoundary>
-    </div>
-  </ThreeSceneProvider>
+  <div class="scene-container">
+    <div ref="globeEl" class="globe-container"></div>
+  </div>
 </template>
 
 <style scoped>
-.scene-view {
-  position: relative;
+.scene-container {
   width: 100%;
   height: 100vh;
-  overflow: hidden;
+  background: #000;
+}
+
+.globe-container {
+  width: 100%;
+  height: 100%;
 }
 </style>
