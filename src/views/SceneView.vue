@@ -17,10 +17,21 @@ const alerts = ref<any[]>([])
 // 深圳的经纬度坐标
 const SHENZHEN_COORDINATES = { lat: 22.5431, lng: 114.0579 }
 
+// 修改预警效果的数据结构
+interface Alert {
+  lat: number
+  lng: number
+  maxR: number
+  propagationSpeed: number
+  repeatPeriod: number
+  pointData: any
+  altitude: number
+}
+
 // 初始化地球
 const initGlobe = () => {
   if (!globeEl.value) return
-  
+
   globe.value = ThreeGlobe()(globeEl.value)
     .globeImageUrl('//unpkg.com/three-globe/example/img/earth-night.jpg')
     .bumpImageUrl('//unpkg.com/three-globe/example/img/earth-topology.png')
@@ -29,7 +40,7 @@ const initGlobe = () => {
     .pointColor('color')
     .pointAltitude(0.1)
     .pointRadius('size')
-    .pointsMerge(true)
+    .pointsMerge(false)
     .arcsData(arcs.value)
     .arcColor('color')
     .arcDashLength(0.6)
@@ -38,12 +49,25 @@ const initGlobe = () => {
     .arcDashAnimateTime(2000)
     .arcStroke(0.5)
     .arcsTransitionDuration(1000)
-    .pointAltitude(({ lat, lng }) => 
-      lat === SHENZHEN_COORDINATES.lat && lng === SHENZHEN_COORDINATES.lng ? 0.2 : 0.1
+    .pointAltitude(({ lat, lng }) =>
+      lat === SHENZHEN_COORDINATES.lat && lng === SHENZHEN_COORDINATES.lng
+        ? 0.2
+        : 0.1
     )
-    .onGlobeClick((coords: { lat: number; lng: number }) => {
-      createAlert(coords.lat, coords.lng)
+    .enablePointerInteraction(true)
+    .onPointClick((point: any, event?: MouseEvent) => {
+      console.log('Point clicked:', point, event)
+      if (point && point.lat !== undefined && point.lng !== undefined) {
+        createAlert(point.lat, point.lng, point)
+      }
     })
+    // .onGlobeClick(({ lat, lng }) => {
+    //   console.log('Globe clicked:', { lat, lng })
+    //   // 将点击坐标转换为地球表面坐标
+    //   const phi = (90 - lat) * (Math.PI / 180)
+    //   const theta = (180 - lng) * (Math.PI / 180)
+    //   createAlert(phi, theta)
+    // })
 
   // 设置控制器
   const controls = globe.value!.controls()
@@ -52,11 +76,11 @@ const initGlobe = () => {
 
   // 获取场景对象
   const scene = globe.value!.scene()
-  
+
   // 设置环境光
   const ambientLight = new THREE.AmbientLight(0xffffff, 0.8)
   scene.add(ambientLight)
-  
+
   // 设置点光源
   const pointLight = new THREE.PointLight(0xffffff, 1)
   pointLight.position.set(100, 100, 100)
@@ -75,7 +99,7 @@ const generateRandomPoints = (count: number) => {
 
 // 生成飞线数据
 const generateArcs = (points: any[]) => {
-  return points.map(endPoint => ({
+  return points.map((endPoint) => ({
     startLat: SHENZHEN_COORDINATES.lat,
     startLng: SHENZHEN_COORDINATES.lng,
     endLat: endPoint.lat,
@@ -88,66 +112,82 @@ const generateArcs = (points: any[]) => {
   }))
 }
 
-// 创建预警效果
-const createAlert = (lat: number, lng: number) => {
-  console.log('Creating alert at:', lat, lng);
-  const alert = {
+// 修改创建预警效果的函数
+const createAlert = (lat: number, lng: number, pointData?: any) => {
+  console.log('Creating alert at:', lat, lng, pointData)
+  const alert: Alert = {
     lat,
     lng,
-    maxR: 0.1,
+    maxR: 0.2,
     propagationSpeed: 5,
-    repeatPeriod: 1000
+    repeatPeriod: 1000,
+    pointData,
+    altitude: pointData?.altitude || 0.1 // 使用点的高度或默认值
   }
-  
+
   alerts.value.push(alert)
-  
+
   gsap.to(alert, {
-    maxR: 2,
-    duration: 2,
+    maxR: 3,
+    duration: 1.5,
     ease: 'power2.out',
     onComplete: () => {
-      alerts.value = alerts.value.filter(a => a !== alert)
+      alerts.value = alerts.value.filter((a) => a !== alert)
     }
   })
 }
 
 // 渲染预警环
 const renderAlerts = () => {
-  console.log('Rendering alerts:', alerts.value.length);
   if (!globe.value) return
-  
   const scene = globe.value.scene()
   
   // 清除旧的预警环
-  scene.children = scene.children.filter(child => !(child instanceof THREE.Mesh && child.userData.isAlert))
-  
-  alerts.value.forEach(alert => {
-    // 将经纬度转换为3D坐标
-    const phi = (90 - alert.lat) * (Math.PI / 180)
-    const theta = (180 - alert.lng) * (Math.PI / 180)
-    const radius = 100.5
+  scene.children = scene.children.filter(
+    (child) => !(child instanceof THREE.Mesh && child.userData.isAlert)
+  )
 
-    // 计算环形位置
-    const x = radius * Math.sin(phi) * Math.cos(theta)
-    const y = radius * Math.cos(phi)
-    const z = radius * Math.sin(phi) * Math.sin(theta)
+  alerts.value.forEach((alert) => {
+    // 获取地球对象
+    const globeObject = scene.children.find(
+      obj => obj instanceof THREE.Mesh && (obj as any).userData.__globeObjType === 'Globe'
+    ) as THREE.Mesh
 
-    // 创建环形，调整大小
-    const ring = new THREE.Mesh(
-      new THREE.RingGeometry(alert.maxR, alert.maxR + 0.5, 32),
-      new THREE.MeshBasicMaterial({
-        color: 0xff4444,
-        transparent: true,
-        opacity: 0.8,
-        side: THREE.DoubleSide,
-        depthWrite: false
-      })
-    )
+    if (globeObject) {
+      // 计算点的位置
+      const lat = alert.lat * Math.PI / 180
+      const lng = -alert.lng * Math.PI / 180
+      const radius = 100.5 + alert.altitude
 
-    ring.userData.isAlert = true
-    ring.position.set(x, y, z)
-    ring.lookAt(0, 0, 0)
-    scene.add(ring)
+      // 使用球坐标系计算位置
+      const phi = Math.PI / 2 - lat
+      const theta = lng
+
+      const position = new THREE.Vector3()
+      position.setFromSphericalCoords(radius, phi, theta)
+      position.applyMatrix4(globeObject.matrixWorld)
+
+      // 创建预警环
+      const ring = new THREE.Mesh(
+        new THREE.RingGeometry(alert.maxR, alert.maxR + 0.3, 32),
+        new THREE.MeshBasicMaterial({
+          color: 0xff4444,
+          transparent: true,
+          opacity: 0.8,
+          side: THREE.DoubleSide,
+          depthTest: false
+        })
+      )
+
+      ring.userData.isAlert = true
+      ring.position.copy(position)
+
+      // 计算环的朝向
+      const normal = position.clone().normalize()
+      ring.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), normal)
+
+      scene.add(ring)
+    }
   })
 }
 
@@ -162,9 +202,9 @@ onMounted(() => {
     ...generateRandomPoints(30)
   ]
   arcs.value = generateArcs(points.value.slice(1))
-  
+
   initGlobe()
-  
+
   const updateInterval = setInterval(() => {
     arcs.value = generateArcs(points.value.slice(1))
   }, 3000)

@@ -22,7 +22,7 @@ declare module 'globe.gl' {
     arcDashLength: (value: number) => GlobeInstance
     arcDashGap: (value: number) => GlobeInstance
     arcDashAnimateTime: (value: number) => GlobeInstance
-    onPointClick: (callback: (point: any) => void) => GlobeInstance
+    onPointClick: (callback: (point: any, event?: MouseEvent) => void) => GlobeInstance
     controls: () => { autoRotate: boolean; autoRotateSpeed: number }
     scene: () => Scene
     camera: Camera
@@ -33,6 +33,11 @@ declare module 'globe.gl' {
     arcStroke: (width: number) => GlobeInstance
     arcsTransitionDuration: (duration: number) => GlobeInstance
     onGlobeClick: (callback: (coords: { lat: number; lng: number }) => void) => GlobeInstance
+    enablePointerInteraction: (enable: boolean) => GlobeInstance
+    customLayerData: (data: any[]) => GlobeInstance
+    customThreeObject: (callback: (d: any) => THREE.Object3D) => GlobeInstance
+    customThreeObjectUpdate: (callback: (obj: THREE.Object3D, d: any) => void) => GlobeInstance
+    customThreeObjectAltitude: (callback: (d: any) => number) => GlobeInstance
   }
 
   export default function Globe(config?: GlobeConfig): {
