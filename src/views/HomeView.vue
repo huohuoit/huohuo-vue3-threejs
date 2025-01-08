@@ -29,14 +29,14 @@ onMounted(() => {
     if (!canvasRef.value) return
 
     particlesInstance = useParticles(canvasRef.value, {
-      count: 8000,
-      size: 0.08,
-      color: '#42b883',
-      opacity: 0.9,
-      spread: 40,
+      count: 10000,
+      size: 0.06,
+      color: '#ff6b4a',
+      opacity: 0.8,
+      spread: 45,
       speed: {
-        x: 0.0003,
-        y: 0.0003
+        x: 0.0005,
+        y: 0.0006
       }
     })
   })
@@ -109,8 +109,9 @@ onBeforeUnmount(() => {
   color: white;
   background: radial-gradient(
     circle at center,
-    rgba(10, 10, 10, 0.3) 0%,
-    rgba(10, 10, 10, 0.7) 100%
+    rgba(25, 0, 0, 0.2) 0%,
+    rgba(45, 0, 0, 0.8) 60%,
+    rgba(20, 0, 0, 0.95) 100%
   );
 }
 
@@ -121,6 +122,7 @@ onBeforeUnmount(() => {
   width: 100vw;
   height: 100vh;
   z-index: 1;
+  filter: contrast(1.1) saturate(1.2);
 }
 
 .content {
@@ -148,13 +150,18 @@ onBeforeUnmount(() => {
 
 .glass-container {
   backdrop-filter: blur(10px);
-  background: rgba(255, 255, 255, 0.03);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 77, 77, 0.05) 0%,
+    rgba(255, 133, 51, 0.02) 100%
+  );
   border-radius: 30px;
   margin: 0 2rem 2rem;
   padding: 2rem;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
+  border: 1px solid rgba(255, 77, 77, 0.15);
 }
 
 .main-content {
@@ -165,25 +172,26 @@ onBeforeUnmount(() => {
   font-size: 5rem;
   margin-bottom: 1rem;
   position: relative;
-  text-shadow: 0 0 30px rgba(66, 184, 131, 0.3);
+  text-shadow: 0 0 30px rgba(255, 77, 77, 0.4), 0 0 60px rgba(255, 77, 77, 0.2);
 }
 
 .gradient-text {
   position: relative;
   display: inline-block;
-  background: linear-gradient(45deg, #42b883, #64ffda);
+  background: linear-gradient(45deg, #ff4d4d, #ffa149);
   background-clip: text;
   -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 30px rgba(255, 77, 77, 0.4), 0 0 60px rgba(255, 77, 77, 0.2);
 }
 
 .subtitle {
   font-size: 2rem;
   margin-bottom: 3rem;
-  text-shadow: 0 0 20px rgba(100, 255, 218, 0.3);
+  text-shadow: 0 0 20px rgba(255, 133, 51, 0.4), 0 0 40px rgba(255, 133, 51, 0.2);
 }
 
 .gradient-text-light {
-  background: linear-gradient(45deg, #42b883 30%, #64ffda 70%);
+  background: linear-gradient(45deg, #ff4d4d 30%, #ff8533 70%);
   background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -206,7 +214,7 @@ onBeforeUnmount(() => {
 .glass-button:hover {
   background: rgba(255, 255, 255, 0.1);
   transform: translateY(-2px);
-  box-shadow: 0 12px 32px rgba(66, 184, 131, 0.2);
+  box-shadow: 0 12px 32px rgba(255, 77, 77, 0.2);
 }
 
 .scene-link {
@@ -220,10 +228,12 @@ onBeforeUnmount(() => {
 .scene-link.primary {
   background: linear-gradient(
     45deg,
-    rgba(66, 184, 131, 0.8),
-    rgba(53, 73, 94, 0.8)
+    rgba(255, 77, 77, 0.9),
+    rgba(255, 133, 51, 0.9)
   );
   color: white;
+  border: none;
+  box-shadow: 0 0 20px rgba(255, 77, 77, 0.3), inset 0 0 10px rgba(255, 255, 255, 0.2);
 }
 
 .scene-link.secondary {
@@ -238,7 +248,7 @@ onBeforeUnmount(() => {
 
 .scene-link:hover {
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(66, 184, 131, 0.4);
+  box-shadow: 0 5px 15px rgba(255, 77, 77, 0.4);
 }
 
 .features {
@@ -252,18 +262,29 @@ onBeforeUnmount(() => {
 
 .glass-card {
   backdrop-filter: blur(8px);
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: linear-gradient(
+    135deg, 
+    rgba(255, 77, 77, 0.08) 0%,
+    rgba(255, 133, 51, 0.12) 50%,
+    rgba(255, 165, 0, 0.08) 100%
+  );
+  border: 1px solid rgba(255, 77, 77, 0.2);
   border-radius: 20px;
   padding: 2rem;
   transition: all 0.3s ease;
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  position: relative;
+  overflow: hidden;
 }
 
 .glass-card:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: linear-gradient(
+    135deg, 
+    rgba(255, 77, 77, 0.05),
+    rgba(255, 133, 51, 0.08)
+  );
   transform: translateY(-5px);
-  box-shadow: 0 12px 32px rgba(66, 184, 131, 0.2);
+  box-shadow: 0 12px 32px rgba(255, 77, 77, 0.2);
 }
 
 .feature-item {
@@ -277,10 +298,12 @@ onBeforeUnmount(() => {
 .feature-icon {
   font-size: 2.5rem;
   margin-bottom: 1.5rem;
+  animation: flicker 3s infinite;
+  text-shadow: 0 0 20px rgba(255, 77, 77, 0.6);
 }
 
 .feature-item h3 {
-  color: #64ffda;
+  color: #ff8533;
   margin-bottom: 1rem;
   font-size: 1.5rem;
 }
@@ -307,7 +330,11 @@ onBeforeUnmount(() => {
     margin: 1rem;
     padding: 1rem;
     backdrop-filter: blur(15px);
-    background: rgba(255, 255, 255, 0.05);
+    background: linear-gradient(
+      135deg,
+      rgba(255, 77, 77, 0.08) 0%,
+      rgba(255, 133, 51, 0.05) 100%
+    );
     border: 1px solid rgba(255, 255, 255, 0.15);
   }
 
@@ -342,11 +369,44 @@ onBeforeUnmount(() => {
 }
 
 .glass-container::-webkit-scrollbar-thumb {
-  background: rgba(66, 184, 131, 0.3);
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 77, 77, 0.5),
+    rgba(255, 133, 51, 0.5)
+  );
   border-radius: 3px;
 }
 
 .glass-container::-webkit-scrollbar-thumb:hover {
-  background: rgba(66, 184, 131, 0.5);
+  background: rgba(255, 77, 77, 0.5);
+}
+
+/* 添加火焰动效 */
+@keyframes flicker {
+  0%, 100% { opacity: 1; text-shadow: 0 0 20px rgba(255, 77, 77, 0.6); }
+  50% { opacity: 0.8; text-shadow: 0 0 30px rgba(255, 133, 51, 0.8); }
+}
+
+/* 添加火焰效果 */
+.glass-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 77, 77, 0.1),
+    transparent
+  );
+  animation: fireShine 3s infinite;
+}
+
+@keyframes fireShine {
+  0% { left: -100%; }
+  50% { left: 100%; }
+  100% { left: 100%; }
 }
 </style>
