@@ -24,7 +24,6 @@
   },
   "devDependencies": {
     "@types/three": "^0.171.0",
-    "@types/vue": "^2.0.0",
     "@typescript-eslint/eslint-plugin": "^8.19.0",
     "@typescript-eslint/parser": "^8.19.0",
     "@unocss/preset-attributify": "^0.65.3",
