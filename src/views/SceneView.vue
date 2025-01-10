@@ -16,6 +16,13 @@ const points = ref<any[]>([])
 // 深圳的经纬度坐标
 const SHENZHEN_COORDINATES = { lat: 22.5431, lng: 114.0579 }
 
+// 添加新的 ref
+const tooltip = ref<HTMLDivElement>()
+const isHovering = ref(false)
+const hoverData = ref<any>(null)
+
+// 添加鼠标位置状态
+const mousePosition = ref({ x: 0, y: 0 })
 
 // 在 script setup 顶部添加新的着色器代码
 const pointVertexShader = `
@@ -130,17 +137,41 @@ const initGlobe = () => {
       const normal = obj.position.clone().normalize()
       obj.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), normal)
     })
+    .onCustomLayerHover((obj: any, event: MouseEvent) => {
+      if (obj === null) {
+        isHovering.value = false
+        hoverData.value = null
+        // 恢复自动旋转
+        const controls = globe.value!.controls() as OrbitControls
+        controls.autoRotate = true
+        return
+      }
+
+      isHovering.value = true
+      hoverData.value = obj
+      // 停止自动旋转
+      const controls = globe.value!.controls() as OrbitControls
+      controls.autoRotate = false
+
+      // 更新鼠标位置
+      if (event) {
+        mousePosition.value = {
+          x: event.clientX,
+          y: event.clientY
+        }
+      }
+    })
 
   // 设置控制器
   const controls = globe.value!.controls() as OrbitControls
   controls.autoRotate = true
   controls.autoRotateSpeed = 0.5
-  
+
   // 优化控制器设置
   controls.enableZoom = true
   controls.minDistance = 180 // 调整最小缩放距离
   controls.maxDistance = 1000 // 调整最大缩放距离
-  controls.zoomSpeed = 5.0   // 显著增加缩放速度
+  controls.zoomSpeed = 5.0 // 显著增加缩放速度
   controls.rotateSpeed = 1.0 // 保持旋转速度不变
   controls.enableDamping = true
   controls.dampingFactor = 0.05 // 减小阻尼系数，使缩放更灵敏
@@ -160,13 +191,17 @@ const initGlobe = () => {
 
 // 生成随机数据点
 const generateRandomPoints = (count: number) => {
-  return Array.from({ length: count }, () => ({
+  return Array.from({ length: count }, (_, i) => ({
     lat: (Math.random() - 0.5) * 140 + 20,
     lng: (Math.random() - 0.5) * 360,
-    size: Math.random() * 2 + 1.5,
+    size: Math.random() * 4 + 3,
     color: new THREE.Color()
       .setHSL(Math.random() * 0.2 + 0.5, 0.8, 0.6)
-      .getStyle()
+      .getStyle(),
+    // 添加一些示例数据
+    name: `Point ${i + 1}`,
+    value: Math.floor(Math.random() * 1000),
+    growth: (Math.random() * 100).toFixed(2) + '%'
   }))
 }
 
@@ -227,6 +262,35 @@ onBeforeUnmount(() => {
 <template>
   <div class="scene-container">
     <div ref="globeEl" class="globe-container"></div>
+    <div
+      v-if="isHovering && hoverData"
+      ref="tooltip"
+      class="tooltip"
+      :style="{
+        left: mousePosition.x + 'px',
+        top: mousePosition.y + 'px'
+      }"
+    >
+      <div class="tooltip-header">{{ hoverData.name }}</div>
+      <div class="tooltip-content">
+        <div class="tooltip-item">
+          <span>经度:</span>
+          <span>{{ hoverData.lng.toFixed(2) }}°</span>
+        </div>
+        <div class="tooltip-item">
+          <span>纬度:</span>
+          <span>{{ hoverData.lat.toFixed(2) }}°</span>
+        </div>
+        <div class="tooltip-item">
+          <span>数值:</span>
+          <span>{{ hoverData.value }}</span>
+        </div>
+        <div class="tooltip-item">
+          <span>增长:</span>
+          <span>{{ hoverData.growth }}</span>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -240,5 +304,49 @@ onBeforeUnmount(() => {
 .globe-container {
   width: 100%;
   height: 100%;
+}
+
+.tooltip {
+  position: fixed;
+  pointer-events: none;
+  transform: translate(10px, -50%);
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 12px;
+  color: white;
+  font-size: 14px;
+  z-index: 1000;
+  min-width: 200px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+}
+
+.tooltip::after {
+  display: none;
+}
+
+.tooltip-header {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.tooltip-content {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.tooltip-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tooltip-item span:first-child {
+  color: rgba(255, 255, 255, 0.7);
 }
 </style>
