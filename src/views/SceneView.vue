@@ -33,9 +33,11 @@ const initGlobe = () => {
   if (!globeEl.value) return
 
   globe.value = ThreeGlobe()(globeEl.value)
+    // .globeImageUrl('/public/textures/earth_li.svg')
     .globeImageUrl('//unpkg.com/three-globe/example/img/earth-night.jpg')
     .bumpImageUrl('//unpkg.com/three-globe/example/img/earth-topology.png')
     .backgroundImageUrl('//unpkg.com/three-globe/example/img/night-sky.png')
+    // .backgroundImageUrl('/public/textures/night-sky.jpg')
     .pointsData(points.value)
     .pointColor('color')
     .pointAltitude(0.1)
@@ -61,13 +63,13 @@ const initGlobe = () => {
         createAlert(point.lat, point.lng, point)
       }
     })
-    // .onGlobeClick(({ lat, lng }) => {
-    //   console.log('Globe clicked:', { lat, lng })
-    //   // 将点击坐标转换为地球表面坐标
-    //   const phi = (90 - lat) * (Math.PI / 180)
-    //   const theta = (180 - lng) * (Math.PI / 180)
-    //   createAlert(phi, theta)
-    // })
+  // .onGlobeClick(({ lat, lng }) => {
+  //   console.log('Globe clicked:', { lat, lng })
+  //   // 将点击坐标转换为地球表面坐标
+  //   const phi = (90 - lat) * (Math.PI / 180)
+  //   const theta = (180 - lng) * (Math.PI / 180)
+  //   createAlert(phi, theta)
+  // })
 
   // 设置控制器
   const controls = globe.value!.controls()
@@ -78,8 +80,8 @@ const initGlobe = () => {
   const scene = globe.value!.scene()
 
   // 设置环境光
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.8)
-  scene.add(ambientLight)
+  // const ambientLight = new THREE.AmbientLight(0xffffff, 0.8)
+  // scene.add(ambientLight)
 
   // 设置点光源
   const pointLight = new THREE.PointLight(0xffffff, 1)
@@ -141,7 +143,7 @@ const createAlert = (lat: number, lng: number, pointData?: any) => {
 const renderAlerts = () => {
   if (!globe.value) return
   const scene = globe.value.scene()
-  
+
   // 清除旧的预警环
   scene.children = scene.children.filter(
     (child) => !(child instanceof THREE.Mesh && child.userData.isAlert)
@@ -150,13 +152,15 @@ const renderAlerts = () => {
   alerts.value.forEach((alert) => {
     // 获取地球对象
     const globeObject = scene.children.find(
-      obj => obj instanceof THREE.Mesh && (obj as any).userData.__globeObjType === 'Globe'
+      (obj) =>
+        obj instanceof THREE.Mesh &&
+        (obj as any).userData.__globeObjType === 'Globe'
     ) as THREE.Mesh
 
     if (globeObject) {
       // 计算点的位置
-      const lat = alert.lat * Math.PI / 180
-      const lng = -alert.lng * Math.PI / 180
+      const lat = (alert.lat * Math.PI) / 180
+      const lng = (-alert.lng * Math.PI) / 180
       const radius = 100.5 + alert.altitude
 
       // 使用球坐标系计算位置
