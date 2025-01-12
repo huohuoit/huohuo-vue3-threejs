@@ -14,7 +14,9 @@ declare module 'globe.gl' {
     backgroundImageUrl: (url: string) => GlobeInstance
     pointsData: (data: any[]) => GlobeInstance
     pointColor: (callback: (() => string) | string) => GlobeInstance
-    pointAltitude: (value: number | ((point: { lat: number; lng: number }) => number)) => GlobeInstance
+    pointAltitude: (
+      value: number | ((point: { lat: number; lng: number }) => number)
+    ) => GlobeInstance
     pointRadius: (value: number | string) => GlobeInstance
     pointsMerge: (merge: boolean) => GlobeInstance
     arcsData: (data: any[]) => GlobeInstance
@@ -22,7 +24,9 @@ declare module 'globe.gl' {
     arcDashLength: (value: number) => GlobeInstance
     arcDashGap: (value: number) => GlobeInstance
     arcDashAnimateTime: (value: number) => GlobeInstance
-    onPointClick: (callback: (point: any, event?: MouseEvent) => void) => GlobeInstance
+    onPointClick: (
+      callback: (point: any, event?: MouseEvent) => void
+    ) => GlobeInstance
     controls: () => { autoRotate: boolean; autoRotateSpeed: number }
     scene: () => Scene
     camera: Camera
@@ -32,16 +36,29 @@ declare module 'globe.gl' {
     arcDashInitialGap: (callback: (() => number) | number) => GlobeInstance
     arcStroke: (width: number) => GlobeInstance
     arcsTransitionDuration: (duration: number) => GlobeInstance
-    onGlobeClick: (callback: (coords: { lat: number; lng: number }) => void) => GlobeInstance
+    onGlobeClick: (
+      callback: (coords: { lat: number; lng: number }) => void
+    ) => GlobeInstance
     enablePointerInteraction: (enable: boolean) => GlobeInstance
     customLayerData: (data: any[]) => GlobeInstance
     customThreeObject: (callback: (d: any) => THREE.Object3D) => GlobeInstance
-    customThreeObjectUpdate: (callback: (obj: THREE.Object3D, d: any) => void) => GlobeInstance
+    customThreeObjectUpdate: (
+      callback: (obj: THREE.Object3D, d: any) => void
+    ) => GlobeInstance
     customThreeObjectAltitude: (callback: (d: any) => number) => GlobeInstance
+    onCustomLayerHover: (
+      callback: (obj: any | null, prevObj?: any | null) => void
+    ) => GlobeInstance
+    getScreenCoords: (
+      lat: number,
+      lng: number,
+      altitude?: number
+    ) => { x: number; y: number }
   }
 
   export default function Globe(config?: GlobeConfig): {
-    (element: HTMLElement): GlobeInstance;
-    new (element: HTMLElement): GlobeInstance;
+    (element: HTMLElement): GlobeInstance
+    new (element: HTMLElement): GlobeInstance
   }
-} pointsMerge
+}
+pointsMerge
