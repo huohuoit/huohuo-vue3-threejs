@@ -137,7 +137,7 @@ const initGlobe = () => {
       const normal = obj.position.clone().normalize()
       obj.quaternion.setFromUnitVectors(new THREE.Vector3(0, 0, 1), normal)
     })
-    .onCustomLayerHover((obj: any, event: MouseEvent) => {
+    .onCustomLayerHover((obj: any, event: any) => {
       if (obj === null) {
         isHovering.value = false
         hoverData.value = null
@@ -154,10 +154,11 @@ const initGlobe = () => {
       controls.autoRotate = false
 
       // 更新鼠标位置
-      if (event) {
+      if (event && event.x !== undefined && event.y !== undefined) {
+        // Globe.gl 提供的事件对象中的坐标
         mousePosition.value = {
-          x: event.clientX,
-          y: event.clientY
+          x: event.x + 15,
+          y: event.y + 15
         }
       }
     })
@@ -309,7 +310,6 @@ onBeforeUnmount(() => {
 .tooltip {
   position: fixed;
   pointer-events: none;
-  transform: translate(10px, -50%);
   background: rgba(0, 0, 0, 0.8);
   backdrop-filter: blur(4px);
   border: 1px solid rgba(255, 255, 255, 0.2);
