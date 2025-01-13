@@ -101,6 +101,7 @@ const initGlobe = () => {
   if (!globeEl.value) return
 
   globe.value = ThreeGlobe()(globeEl.value)
+    // .globeImageUrl('/public/textures/earth_li.svg')
     .globeImageUrl('//unpkg.com/three-globe/example/img/earth-night.jpg')
     .bumpImageUrl('//unpkg.com/three-globe/example/img/earth-topology.png')
     .backgroundImageUrl('//unpkg.com/three-globe/example/img/night-sky.png')
@@ -181,8 +182,8 @@ const initGlobe = () => {
   const scene = globe.value!.scene()
 
   // 设置环境光
-  const ambientLight = new THREE.AmbientLight(0xffffff, 0.8)
-  scene.add(ambientLight)
+  // const ambientLight = new THREE.AmbientLight(0xffffff, 0.8)
+  // scene.add(ambientLight)
 
   // 设置点光源
   const pointLight = new THREE.PointLight(0xffffff, 1)
