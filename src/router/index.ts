@@ -1,16 +1,25 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
-import HomeView from '@/views/HomeView.vue'
 
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
     name: 'home',
-    component: HomeView
+    component: () => import('@/views/HomeView.vue')
   },
   {
-    path: '/scene',
-    name: 'scene',
-    component: () => import('@/views/SceneView.vue')
+    path: '/world',
+    name: 'world',
+    component: () => import('@/views/world/index.vue')
+  },
+  {
+    path: '/earth',
+    name: 'earth',
+    component: () => import('@/views/earth/SceneView.vue')
+  },
+  {
+    path: '/demo/imgParticle',
+    name: 'imgParticle',
+    component: () => import('@/views/demo/imgParticle/index.vue')
   }
 ]
 
@@ -19,4 +28,4 @@ const router = createRouter({
   routes
 })
 
-export default router 
+export default router

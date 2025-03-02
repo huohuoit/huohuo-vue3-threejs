@@ -14,13 +14,18 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "@tresjs/cientos": "^4.1.0",
+    "@tresjs/core": "^4.3.3",
     "@types/stats.js": "^0.17.3",
     "@vueuse/core": "^12.3.0",
+    "chalk": "^5.4.1",
     "globe.gl": "^2.34.6",
     "gsap": "^3.12.5",
     "pinia": "^2.3.0",
     "stats.js": "^0.17.0",
+    "oimophysics": "^1.2.2",
     "three": "^0.172.0",
+    "tweakpane": "^4.0.5",
     "vue": "^3.5.13",
     "vue-router": "^4.5.0"
   },

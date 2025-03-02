@@ -3,6 +3,7 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
 import { validateEnv } from './utils/env'
+import Tres from '@tresjs/core'
 
 import './styles/main.css'
 import 'uno.css'
@@ -15,5 +16,6 @@ const app = createApp(App)
 
 app.use(createPinia())
 app.use(router)
+app.use(Tres)
 
 app.mount('#app')

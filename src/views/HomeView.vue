@@ -65,7 +65,7 @@ onBeforeUnmount(() => {
 
       <div class="glass-container main-content">
         <div class="button-group">
-          <router-link to="/scene" class="scene-link primary glass-button">
+          <router-link to="/world" class="scene-link primary glass-button">
             <span class="button-content">
               <span class="icon">🚀</span>
               进入3D场景

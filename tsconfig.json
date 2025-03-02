@@ -9,6 +9,7 @@
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
+    "allowJs": true,
     "noEmit": true,
     "jsx": "preserve",
     "strict": true,
@@ -23,6 +24,13 @@
       "@/types/*": ["src/types/*"]
     }
   },
-  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue", "src/types/**/*.ts"],
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.d.ts",
+    "src/**/*.tsx",
+    "src/**/*.vue",
+    "src/types/**/*.ts",
+    "src/views/world/lib/alienJS/all.three.js"
+  ],
   "references": [{ "path": "./tsconfig.node.json" }]
 }
