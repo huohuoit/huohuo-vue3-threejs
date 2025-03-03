@@ -20,6 +20,11 @@ const routes: RouteRecordRaw[] = [
     path: '/demo/imgParticle',
     name: 'imgParticle',
     component: () => import('@/views/demo/imgParticle/index.vue')
+  },
+  {
+    path: '/demo/room',
+    name: 'room',
+    component: () => import('@/views/demo/room/index.vue')
   }
 ]
 
