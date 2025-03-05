@@ -1,24 +1,21 @@
 import { ref } from 'vue'
-import { useTres, useRenderLoop } from '@tresjs/core'
-import { Vector3, Euler } from 'three'
+import { Object3D } from 'three'
 
-export function useRoomAnimation() {
-  const { scene, camera } = useTres()
-
+export function useRoomAnimation(scene: any) {
   // 物体漂浮动画
   const floatingObjects = ref<
-    { object: THREE.Object3D; initialY: number; phase: number }[]
+    { object: Object3D; initialY: number; phase: number }[]
   >([])
 
   // 初始化漂浮动画对象
   const initFloatingObjects = () => {
-    if (!scene.value) return
+    if (!scene) return
 
     // 找到需要漂浮的物体
     const objects = ['CatPlushie', 'PhotoFrame', 'Plant']
 
     objects.forEach((objName) => {
-      const obj = scene.value.getObjectByName(objName)
+      const obj = scene.getObjectByName(objName)
       if (obj) {
         floatingObjects.value.push({
           object: obj,

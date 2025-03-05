@@ -1,54 +1,30 @@
 import { ref } from 'vue'
-import { useTres, useRenderLoop } from '@tresjs/core'
-import { Vector3, Euler } from 'three'
 
-export function useRoomAnimation() {
-  const { scene, camera } = useTres()
+type AudioResource = {
+  url: string
+  volume?: number
+  loop?: boolean
+}
 
-  // 物体漂浮动画
-  const floatingObjects = ref<
-    { object: THREE.Object3D; initialY: number; phase: number }[]
-  >([])
-
-  // 初始化漂浮动画对象
-  const initFloatingObjects = () => {
-    if (!scene.value) return
-
-    // 找到需要漂浮的物体
-    const objects = ['CatPlushie', 'PhotoFrame', 'Plant']
-
-    objects.forEach((objName) => {
-      const obj = scene.value.getObjectByName(objName)
-      if (obj) {
-        floatingObjects.value.push({
-          object: obj,
-          initialY: obj.position.y,
-          phase: Math.random() * Math.PI * 2 // 随机初始相位
-        })
-      }
-    })
+const audioMap: Record<string, AudioResource> = {
+  bgm: {
+    url: 'music/cosmic_candy.ogg',
+    volume: 0.5,
+    loop: true
   }
+  // ... 更多音频配置
+}
 
-  // 动画逻辑
-  const animateRoom = () => {
-    const time = Date.now() * 0.001 // 时间（秒）
+export function createAudio(key: keyof typeof audioMap): HTMLAudioElement {
+  const resource = audioMap[key]
+  const audio = new Audio(
+    new URL(`../assets/audio/${resource.url}`, import.meta.url).href
+  )
 
-    // 物体漂浮动画
-    floatingObjects.value.forEach((item) => {
-      if (item.object) {
-        // 简单的正弦漂浮
-        item.object.position.y =
-          item.initialY + Math.sin(time + item.phase) * 0.05
-        // 轻微旋转
-        item.object.rotation.y = Math.sin(time * 0.5 + item.phase) * 0.03
-      }
-    })
-  }
+  if (resource.volume !== undefined) audio.volume = resource.volume
+  if (resource.loop !== undefined) audio.loop = resource.loop
 
-  return {
-    initFloatingObjects,
-    animateRoom
-  }
+  return audio
 }
 
 export function useRoomAudio() {
@@ -57,9 +33,7 @@ export function useRoomAudio() {
 
   // 初始化音频
   const initAudio = () => {
-    audioElement = new Audio('../assets/audio/music/cosmic_candy.ogg') // 音频路径
-    audioElement.loop = true
-    audioElement.volume = 0.5
+    audioElement = createAudio('bgm')
   }
 
   // 切换背景音乐

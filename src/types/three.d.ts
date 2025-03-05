@@ -1,7 +1,7 @@
 import { Object3D } from 'three'
 
 export interface SceneObject extends Object3D {
-  id: string
+  id: number
   name: string
 }
 
@@ -16,4 +16,4 @@ export interface SceneConfig {
     y: number
     z: number
   }
-} 
+}

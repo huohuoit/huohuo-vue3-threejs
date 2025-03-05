@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { TresCanvas, useRenderLoop, useTexture } from '@tresjs/core'
+import { TresCanvas } from '@tresjs/core'
 import { OrbitControls } from '@tresjs/cientos'
 import RoomModel from './RoomModel.vue'
 import RoomLighting from './RoomLighting.vue'
-import { useRoomAnimation } from '../composables/useRoomAnimation'
 
 const props = defineProps<{
   enableControls?: boolean
@@ -16,9 +15,8 @@ const emit = defineEmits<{
 }>()
 
 const sceneReady = ref(false)
-const { animateRoom } = useRoomAnimation()
 
-const totalAssets = ref(0)
+const totalAssets = ref(1)
 const loadedAssets = ref(0)
 
 const handleAssetLoaded = () => {
@@ -32,17 +30,9 @@ const handleAssetLoaded = () => {
 }
 
 // 设置资产总数
-onMounted(() => {
+onMounted(async () => {
   // 这里的数值需要根据实际资产数量调整
-  totalAssets.value = 15
-})
-
-// 启动渲染循环
-const { onLoop } = useRenderLoop()
-onLoop(() => {
-  if (sceneReady.value) {
-    animateRoom()
-  }
+  totalAssets.value = 1
 })
 </script>
 
@@ -63,10 +53,22 @@ onLoop(() => {
     />
 
     <!-- 灯光设置 -->
-    <RoomLighting />
+    <!-- <RoomLighting /> -->
 
     <!-- 房间模型 -->
     <RoomModel @asset-loaded="handleAssetLoaded" />
+
+    <TresGroup :position="[0, 0.5, -2]" name="desk">
+      <TresMesh
+        name="CustomComputer"
+        :position="[0.5, 0.8, 0]"
+        :rotation="[0, -Math.PI / 6, 0]"
+        :scale="[0.5, 0.5, 0.5]"
+      >
+        <TresBoxGeometry :args="[1, 0.05, 0.7]" />
+        <TresMeshStandardMaterial color="#333333" />
+      </TresMesh>
+    </TresGroup>
 
     <!-- 相机控制 -->
     <OrbitControls

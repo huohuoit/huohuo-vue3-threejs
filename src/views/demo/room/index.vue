@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref } from 'vue'
 import RoomScene from './components/RoomScene.vue'
 import { useRoomAudio } from './composables/useRoomAudio'
-// import useRoomAudio from './composables/useRoomAudio'
 
 const isLoading = ref(true)
 const loadingProgress = ref(0)
@@ -18,11 +17,11 @@ const handleProgressUpdate = (progress: number) => {
 </script>
 
 <template>
-  <div class="relative w-full h-screen overflow-hidden bg-black">
+  <div class="relative w-full h-screen overflow-hidden">
     <!-- 加载画面 -->
     <div
       v-if="isLoading"
-      class="absolute inset-0 flex flex-col items-center justify-center z-50 bg-black"
+      class="absolute inset-0 flex flex-col items-center justify-center z-50"
     >
       <div class="text-3xl font-bold text-purple-400 mb-4">火火的房间</div>
       <div class="w-64 h-2 bg-gray-700 rounded-full overflow-hidden">
@@ -36,10 +35,10 @@ const handleProgressUpdate = (progress: number) => {
 
     <!-- 背景音乐控制按钮 -->
     <button
-      class="absolute top-4 right-4 z-40 p-2 rounded-full bg-white/20 hover:bg-white/30 transition-colors"
+      class="absolute top-4 right-4 z-40 p-2 border-amber-300 rounded-full bg-orange/20 hover:bg-orange/30 transition-colors cursor-pointer"
       @click="toggleBgm"
     >
-      <i class="i-carbon-music text-white text-xl"></i>
+      <div class="i-carbon-music text-purple-400 text-xl"></div>
     </button>
 
     <!-- 3D场景 -->
